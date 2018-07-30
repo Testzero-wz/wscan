@@ -1,0 +1,21 @@
+import sys, os
+from lib.io.Argument import Argument
+from lib.controller.Controller import Controller
+
+
+if sys.version_info < (3, 5):
+    sys.stdout.write("Requires Python 3.5 or higher ")
+    sys.exit(1)
+
+
+class wscan():
+
+    def __init__(self):
+        self.base_path = os.path.dirname(os.path.realpath(__file__))
+        self.args = Argument(self.base_path).get_args()
+        self.control = Controller(args=self.args)
+        self.control.start()
+
+
+if __name__ == "__main__":
+    wscan()
