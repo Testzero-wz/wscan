@@ -27,7 +27,8 @@ Type *-h* for help
 
 **Usage:** 
 
-:: wscan.py [-u URL] [-f] [-m] [Extend options]
+wscan.py [-u URL] [-f] [-m] [Extend options]
+
 +------------+--------------------------------------+     
 | Optional   |      Desciption                      |
 +============+======================================+     
