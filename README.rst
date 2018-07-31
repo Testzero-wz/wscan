@@ -25,35 +25,36 @@ Usage:
 
 Type *-h* for help
 
-**Usage:** ::
+**Usage:** :: 
 
   $ wscan.py [-u URL] [-f] [-m] [Extend options]
 
   
-* **-u  URL**:          Target URL  
+* **-u  URL**:          Target URL.   
 
-* **-f**:   Fuzz target url with dictionary
+* **-f**:   Fuzz target url with dictionary .
 
-* **--m**:   Crawl all URL on the target to get a map . 
+* **-m**:   Crawl all URL on the target to get a map. 
 
-* **-b  BASE**:  Base URL of fuzz **e.g** -b /cms/app \[Default: /\]
+* **-b  BASE**:  Base URL of fuzz **e.g** -b /cms/app.   \[Default: /\]
 
-* **-e  EXTEND**:   Suffix name used in fuzz \[Default: php\]
+* **-e  EXTEND**:   Suffix name used in fuzz.  \[Default: php\]
 
 * **-max   NUM**:     Max num of co-routine. \[Default: 20\] 
 
-* **--no-img**:       Don't crawl image url when mapping target
+* **--no-img**:       Don't crawl image url when mapping target. 
 
-* **--no-re**:       Don't redirect when requesting
+* **--no-re**:       Don't redirect when requesting. 
 
-* **-v**:      Show more detail   
+* **-v**:      Show more detail.  
 
-* **-vv**:      Show the most detailed details
+* **-vv**:      Show the most detailed details. 
 
-* **-h**:       Show this help message and exit
+* **-h**:       Show this help message and exit. 
 
 
-Example: wscan.py -u "http://www.example.com/" -f -m -v
+Example:: 
+  $ wscan.py -u "http://www.example.com/" -f -m 
 
 
 Requires
