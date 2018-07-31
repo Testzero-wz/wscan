@@ -28,7 +28,7 @@ Type *-h* for help
 **Usage:** 
 
 wscan.py [-u URL] [-f] [-m] [Extend options]
-
+=========        ================================
 =========        ================================
 -u URL           Target URL
 -f               Fuzz target url with dictionary.
