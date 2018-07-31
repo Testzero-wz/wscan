@@ -54,6 +54,7 @@ Type *-h* for help
 
 
 Example :: 
+
   $ wscan.py -u "http://www.example.com/" -f -m 
 
 
