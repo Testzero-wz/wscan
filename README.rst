@@ -15,6 +15,10 @@ Features
 - Custom maximum of co-routine
 - Friendly interface
 
+Demo
+----
+![Wscan]{https://github.com/WananpIG/wscan/blob/master/wscan_test.gif}
+
 requires
 --------
 - Python >=3.5
