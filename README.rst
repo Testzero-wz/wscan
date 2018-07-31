@@ -26,10 +26,9 @@ Usage:
 Type *-h* for help
 
 **Usage:** 
+
 wscan.py [-u URL] [-f] [-m] [Extend options]
 
-==============   ===================
-Optional arguments  Description
 =========        ================================
 -u URL           Target URL
 -f               Fuzz target url with dictionary.
@@ -45,11 +44,7 @@ Optional arguments  Description
 =========        ================================
 
 
-
 Example: wscan.py -u "http://www.example.com/" -f -m -v
-
-
-
 
 
 Requires
