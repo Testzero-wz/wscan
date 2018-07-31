@@ -20,6 +20,32 @@ Demo
 
 .. image:: https://raw.githubusercontent.com/WananpIG/wscan/master/wscan_test.gif
 
+Usage:
+-----
+
+Type -h for help
+
+usage: wscan.py [-u URL] [-f] [-m] [Extend options]
+
+A Fast & Simple web site scanner.
+
+optional arguments:
+  -h, --help    show this help message and exit
+  -u URL        Target URL
+  -f            Fuzz target url with dictionary.
+  -m            Crawl all URL on the target to get a map of the site.
+  -max MAX_NUM  Max num of co-routine. [Default: 20]
+  -b BASE       Base URL of fuzz e.g -b /cms/app [Default: /]
+  -e EXTEND     Suffix name used in fuzz [Default: php]
+  --no-img      Don't crawl image url when mapping target
+  --no-re       Don't redirect when requesting
+  -v            Show more detail
+  -vv           Show the most detailed details
+
+Example: wscan.py -u "http://www.example.com/" -f -m -v
+
+
+
 requires
 --------
 - Python >=3.5
