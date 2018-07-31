@@ -31,17 +31,17 @@ wscan.py [-u URL] [-f] [-m] [Extend options]
 ==============   ===================
 Optional arguments  Description
 =========        ================================
--h, --help       show this help message and exit
 -u URL           Target URL
 -f               Fuzz target url with dictionary.
 -m               Crawl all URL on the target to get a map of the site.
--max NUM         Max num of co-routine. [Default: 20]
--b BASE          Base URL of fuzz e.g -b /cms/app [Default: /]
--e EXTEND        Suffix name used in fuzz [Default: php]
+-max NUM         Max num of co-routine. \[Default: 20\]
+-b BASE          Base URL of fuzz e.g -b /cms/app \[Default: /\]
+-e EXTEND        Suffix name used in fuzz \[Default: php\]
 --no-img         Don't crawl image url when mapping target
 --no-re          Don't redirect when requesting
 -v               Show more detail
 -vv              Show the most detailed details
+-h, --help       show this help message and exit
 =========        ================================
 
 
