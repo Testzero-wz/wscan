@@ -25,11 +25,11 @@ Usage:
 
 Type *-h* for help
 
-**Usage:** 
+**Usage:** ::
 
-
-:: 
   $ wscan.py [-u URL] [-f] [-m] [Extend options]
+
+
 
 +------------+--------------------------------------+     
 | Optional   |      Desciption                      |
