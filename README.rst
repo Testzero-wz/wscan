@@ -3,6 +3,7 @@ wscan
 
 A Fast & Simple web site scanner.
 Base on aiohttp and refer to the dirsearch of multi-threading version.
+
 Can both run in Linux & Windows.
 
 Features
