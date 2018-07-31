@@ -35,7 +35,7 @@ Optional arguments  Description
 -u URL           Target URL
 -f               Fuzz target url with dictionary.
 -m               Crawl all URL on the target to get a map of the site.
--max MAX         Max num of co-routine. [Default: 20]
+-max NUM         Max num of co-routine. [Default: 20]
 -b BASE          Base URL of fuzz e.g -b /cms/app [Default: /]
 -e EXTEND        Suffix name used in fuzz [Default: php]
 --no-img         Don't crawl image url when mapping target
