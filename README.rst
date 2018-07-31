@@ -18,7 +18,7 @@ Features
 Demo
 ----
 
-![Demo](https://raw.githubusercontent.com/WananpIG/wscan/master/wscan_test.gif)
+.. image:: https://raw.githubusercontent.com/WananpIG/wscan/master/wscan_test.gif
 
 requires
 --------
