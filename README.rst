@@ -23,9 +23,7 @@ Demo
 Usage:
 -----
 
-Type *-h* for help
-
-**Usage:** :: 
+**Type *-h* for help** :: 
 
   $ wscan.py [-u URL] [-f] [-m] [Extend options]
 
