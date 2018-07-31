@@ -34,11 +34,11 @@ Usage:
 
 * **-m**:   Crawl all URL on the target to get a map. 
 
-* **-b  BASE**:  Base URL of fuzz **e.g** -b /cms/app.   \[Default: /\]
+* **-b  BASE**:  Base URL of fuzz **e.g** -b /cms/app.   \[ Default: / \]
 
-* **-e  EXTEND**:   Suffix name used in fuzz.  \[Default: php\]
+* **-e  EXTEND**:   Suffix name used in fuzz.  \[ Default: php \]
 
-* **-max   NUM**:     Max num of co-routine. \[Default: 20\] 
+* **-max   NUM**:     Max num of co-routine. \[ Default: 20 \] 
 
 * **--no-img**:       Don't crawl image url when mapping target. 
 
