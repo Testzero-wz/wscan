@@ -34,7 +34,7 @@ wscan.py [-u URL] [-f] [-m] [Extend options]
 +============+======================================+     
 | -u URL     |       Target URL                     | 
 +------------+--------------------------------------+ 
-| -f         |       Fuzz target url with dictionary.| 
+| -f         |    Fuzz target url with dictionary | 
 +------------+--------------------------------------+ 
 |-m          |  Crawl all URL on the target to get a map of the site. | 
 +------------+--------------------------------------+ 
