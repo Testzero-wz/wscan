@@ -53,7 +53,7 @@ Type *-h* for help
 * **-h**:       Show this help message and exit. 
 
 
-Example:: 
+Example :: 
   $ wscan.py -u "http://www.example.com/" -f -m 
 
 
