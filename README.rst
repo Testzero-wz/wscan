@@ -25,11 +25,11 @@ Usage:
 
 Type -h for help
 
-usage: wscan.py [-u URL] [-f] [-m] [Extend options]
-
-A Fast & Simple web site scanner.
+Usage: 
+wscan.py [-u URL] [-f] [-m] [Extend options]
 
 optional arguments:
+
   -h, --help    show this help message and exit
   -u URL        Target URL
   -f            Fuzz target url with dictionary.
