@@ -29,6 +29,7 @@ Usage:
 wscan.py [-u URL] [-f] [-m] [Extend options]
 
 optional arguments:
+>>>
 
   -h, --help    show this help message and exit
   -u URL        Target URL

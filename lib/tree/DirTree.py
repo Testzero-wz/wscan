@@ -14,6 +14,8 @@ class DirTree():
     def add(self, node_path=None):
         if node_path is None:
             return
+        if node_path in ["","/"]:
+            return self.root
         path_split = ""
         if isinstance(node_path, str):
             path_split = self.__url_filter(node_path)
@@ -25,9 +27,7 @@ class DirTree():
         for node_name in range(len(path_split)):
             parent = parent.add_child(path_split[node_name])
         return parent
-        # if parent is not None:
-        #     parent.set_access(True)
-        # print("%s=>%s" % (parent.name, parent.is_access()), parent)
+
 
 
     def __url_filter(self, url):
@@ -99,20 +99,4 @@ class DirTree():
 
 
 if __name__ == '__main__':
-    tree = DirTree("/")
-    tree.add("/account")
-    tree.add("/account")
-    tree.add("/accounts")
-    tree.add("/cms/supesite/abc/register.php")
-    tree.add("/cms/supesite/bac/45/register.php")
-    tree.add("/cms/supesite/abc/45/register.php")
-    tree.add("/etc/apt/sources.list")
-    tree.add("/usr/local/ngnix/logs")
-    tree.add("/usr/local/apache/logs")
-    tree.add("/cms/supesite/123/45")
-    # for node in tree.enum_tree():
-    #     print(node.name, node.get_full_path())
-    tree.get_node("/account").set_status(200)
-    tree.print_tree()
-    # n = tree.get_node("/cms/supesite/123/45/login.phps")
-    # print(n)
+    pass

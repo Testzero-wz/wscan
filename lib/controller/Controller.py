@@ -9,10 +9,10 @@ import random
 from colorama import Fore, Style
 from lib.io.ColorOutput import ScanOutput
 from lib.exception.ScanException import *
+from urllib.parse import urlparse, urljoin
 
 
 class Controller(object):
-
     header = {
         'User-agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.8) Gecko/20100722 Firefox/3.6.8',
         'Accept-Language': 'Zh-CN, zh;q=0.8, en-gb;q=0.8, en-us;q=0.8',
@@ -31,11 +31,10 @@ class Controller(object):
         self.more_detail = self.args.vv
         self.init_url = self.args.url
 
-        self.protocol, self.host, self.port, self.path, self.query = self.__parse_url(self.init_url)
-        self.port = 80 if self.port == "" else self.port
-        self.prefix = self.protocol + "://" + self.host + ("" if self.port == 80 else (":" + str(self.port)))
-        self.output.print_info(self.prefix)
-        self.fuzz_prefix = self.prefix + self.args.base
+        self.protocol, self.netloc, self.path = self.__parse_url(self.init_url)
+        self.prefix = self.protocol + "://" + self.netloc
+        self.init_url = self.prefix + self.path
+        self.fuzz_prefix = urljoin(self.prefix, self.args.base)
 
         self.queue = asyncio.Queue()
         self.tree = DirTree()
@@ -51,8 +50,6 @@ class Controller(object):
         self.max_threads = self.args.max_num
         self.alive_routine = self.args.max_num
 
-
-
         self.output.print_banner()
 
 
@@ -60,15 +57,15 @@ class Controller(object):
         """
         Use regex parse url into (Protocol, Domain, Port, Path, Query)
         :param _url:
-        :return: <tuple> (Protocol, Domain, Port, Path, Query)
+        :return: <tuple> (Protocol, netloc, Path)
         """
         url = _url[:-1] if _url[-1] == "/" else _url
         try:
-            protocol, domain, port, path, query = re.findall("(.*?)://([^/:]+):?([0-9]+)?(/?[^\?]*)?(\??.*)?$", url)[0]
+            protocol, netloc, path, query = re.findall("(.*?)://([^/]+)?(/?[^\?]*)?(\??.*)?$", url)[0]
         except Exception:
             self.output.print_error("Parameter url format error. e.g http://www.example.com")
             sys.exit(1)
-        return protocol, domain, port, path if path != "" else "/", query
+        return protocol, netloc, path if path != "" else "/"
 
 
     def __init_ua(self):
@@ -118,7 +115,7 @@ class Controller(object):
         else:
             charset = None
         html = await response.read()
-        self.__parse_results(html, charset=charset)
+        self.__parse_results(html, str(response.url), charset=charset)
         for node in self.tree.enum_tree():
             if not node.is_access():
                 node.set_access()
@@ -140,7 +137,7 @@ class Controller(object):
             raise TypeError("Fuzz_list is required to be str or list , But a %s was given." % type(url_list))
 
 
-    def __parse_results(self, html, charset=None):
+    def __parse_results(self, html, __url, charset=None):
         """
         Adding URLs collected from html to web Tree
         :param html: Html want to be parsed
@@ -154,45 +151,46 @@ class Controller(object):
                 src_list.extend(soup.find_all('script'))
 
         except Exception as e:
-            raise e
+            raise Exception(e)
 
         # Collect href of tag <a>
         for href in map(lambda tag: tag.get('href'), href_list):
             try:
-                self.tree.add(self.__check_href(href))
-            except Exception:
+                self.tree.add(self.__check_href(href, __url))
+            except Exception as e:
                 pass
 
         # Collect image URLs
         if not self.args.no_img:
             for href in map(lambda tag: tag.get('src'), src_list):
                 try:
-                    self.tree.add(self.__check_href(href))
+                    self.tree.add(self.__check_href(href, __url))
                 except Exception:
                     pass
 
 
-    def __check_href(self, href):
+    def __check_href(self, href, __url=None):
         """
-        Check the URL whether belongs to host
+        Check the URL whether belongs to host and return path
         :param href: URL
-        :return: URL belongs to host or None
+        :return: <string>URL path
         """
-        # If relative path
-        if href.find("/") == 0:
+        if href is None:
+            return
+        parse = urlparse(href)
+        if __url is None:
+            return parse.path
+        if parse.scheme == "":
+            return urlparse(urljoin(__url, href)).path
+        if parse.netloc == self.netloc:
             return href
-
-        # Standard url
-        elif href.find(self.protocol + "://" + self.host) == 0:
-            return self.__parse_url(href)[3]
-
         return None
 
 
     async def get_response(self, url, allow_redirects=True):
         headers = self.header.copy()
         headers['User-agent'] = random.choice(self.UA)
-        return await self.session.get(url, timeout=8, allow_redirects=allow_redirects)
+        return await self.session.get(url, timeout=12, allow_redirects=allow_redirects)
 
 
     async def co_routine(self):
@@ -218,11 +216,11 @@ class Controller(object):
                 continue
 
             if not self.map_finish:
-                full_url = self.prefix + url
+                full_url = urljoin(self.prefix, url)
             else:
-                full_url = self.fuzz_prefix + url
+                full_url = urljoin(self.fuzz_prefix, url)
 
-            self.output.print_lastLine("Processing: %s" % url)
+                self.output.print_lastLine("Processing: %s" % url)
             try:
 
                 res = await self.get_response(full_url, allow_redirects=(self.args.no_re is False))
@@ -279,7 +277,7 @@ class Controller(object):
                     self.output.print_error(
                         "An unknown error occurred when Requesting url:%s" % (Fore.BLUE + full_url + Style.RESET_ALL))
                     self.output.print_error("Error:%s" % e)
-
+                raise Exception(e)
             finally:
                 pass
 
