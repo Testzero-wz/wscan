@@ -28,8 +28,8 @@ Type *-h* for help
 **Usage:** 
 
 
-:: bash
-  wscan.py [-u URL] [-f] [-m] [Extend options]
+:: 
+  $ wscan.py [-u URL] [-f] [-m] [Extend options]
 
 +------------+--------------------------------------+     
 | Optional   |      Desciption                      |
