@@ -19,7 +19,7 @@ Features
 Demo
 ----
 
-.. image:: https://raw.githubusercontent.com/WananpIG/wscan/master/wscan_test.gif
+.. image:: https://raw.githubusercontent.com/WananpIG/wscan/master/demo.gif
 
 Usage:
 -----
