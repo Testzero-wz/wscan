@@ -324,7 +324,7 @@ class Controller(object):
                 You can make it better by reducing the num of co-routine. ")
 
         self.output.print_info("End: %s" % time.strftime("%H:%M:%S"))
-        self.output.new_line(Fore.LIGHTYELLOW_EX + "=" * (self.output.terminal_size) + Style.RESET_ALL)
+        self.output.new_line(Fore.LIGHTYELLOW_EX + "=" * (self.output.terminal_size) + Style.RESET_ALL+"\n")
 
         # Print tree
         self.output.new_line(Fore.LIGHTYELLOW_EX + "Web site map:" + Style.RESET_ALL)

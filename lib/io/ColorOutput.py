@@ -105,7 +105,7 @@ class ScanOutput():
         ____/|__/ /____/ \___/ \__,_/ /_/ /_/ 
         """ + Style.RESET_ALL)
         self.new_line(Fore.LIGHTYELLOW_EX + " " * 10+ "Blog: <https://www.wzsite.cn>" + Style.RESET_ALL)
-        self.new_line(Fore.LIGHTYELLOW_EX + " " * 10 + "Mail: <testzero.wz@gmail.com>\n\n" + Style.RESET_ALL)
+        self.new_line(Fore.LIGHTYELLOW_EX + " " * 10 + "Email: <testzero.wz@gmail.com>\n\n" + Style.RESET_ALL)
 
 
     @staticmethod
@@ -122,6 +122,4 @@ class ScanOutput():
 
 
 if __name__ == "__main__":
-    output = ScanOutput()
-    output.print_error("123" + Fore.BLUE + Back.GREEN + "456" + "789" + Fore.GREEN + "456" + Style.BRIGHT)
     pass
