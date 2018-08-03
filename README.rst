@@ -62,6 +62,8 @@ Requires
 - Python >=3.5
 - aiohttp
 - colorama
+- bs4
+
 
 
 
