@@ -17,7 +17,7 @@ class Argument():
                             help='\nFuzz target url with dictionary. ', default=False)
 
         parser.add_argument('-m', dest='map', action="store_true",
-                            help='\nCrawl all URL on the target to get a map of the site. ',
+                            help='\nCrawl all URL on the target to get a map. ',
                             default=False)
 
         parser.add_argument('-max', dest="max_num", type=int,
@@ -46,12 +46,6 @@ class Argument():
 
         self.args = parser.parse_args()
         self.args.base_path = base_path
-
-        if self.args.base != "/":
-            if self.args.base[0] != "/":
-                self.args.base = "/"+self.args.base
-            if self.args.base[-1] == "/":
-                self.args.base = self.args.base[:-1]
 
 
     def get_args(self):
