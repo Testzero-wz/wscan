@@ -68,7 +68,6 @@ Usage:
 * **-vv**:      Show the most detailed details. 
 
 * **-h**:       Show this help message and exit. 
->>>>>>> b8a386b4b7a35f549d9671c8934a5617f5f70ffa
 
 
 Example :: 
