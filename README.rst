@@ -36,6 +36,7 @@ Usage:
 
 * **-m**:   Crawl all URL on the target to get a map. 
 
+<<<<<<< HEAD
 * **-b  BASE**:  Base URL of fuzzing **e.g** -b /cms/app.   \[ Default: / \]
 
 * **-e  EXTEND**:   Suffix name used for fuzzing. [Default: php]
@@ -51,6 +52,23 @@ Usage:
 * **-v,-vv**:      Show more detail.
 
 * **-h**:       Show this help message and exit.
+=======
+* **-b  BASE**:  Base URL of fuzz **e.g** -b /cms/app.   \[ Default: / \]
+
+* **-e  EXTEND**:   Suffix name used in fuzz.  \[ Default: php \]
+
+* **-max   NUM**:     Max num of co-routine. \[ Default: 20 \] 
+
+* **--no-img**:       Don't crawl image url when mapping target. 
+
+* **--no-re**:       Don't redirect when requesting. 
+
+* **-v**:      Show more detail.  
+
+* **-vv**:      Show the most detailed details. 
+
+* **-h**:       Show this help message and exit. 
+>>>>>>> b8a386b4b7a35f549d9671c8934a5617f5f70ffa
 
 
 Example :: 

@@ -14,7 +14,11 @@ class DirTree:
     def add(self, node_path=None):
         if node_path is None:
             return
+<<<<<<< HEAD
         if node_path in ["", "/"]:
+=======
+        if node_path in ["","/"]:
+>>>>>>> b8a386b4b7a35f549d9671c8934a5617f5f70ffa
             return self.root
         path_split = ""
         if isinstance(node_path, str):
@@ -30,6 +34,10 @@ class DirTree:
                 break
 
         return parent
+<<<<<<< HEAD
+=======
+
+>>>>>>> b8a386b4b7a35f549d9671c8934a5617f5f70ffa
 
 
     def __url_filter(self, url):

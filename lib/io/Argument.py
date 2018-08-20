@@ -51,6 +51,7 @@ class Argument():
         self.args.base_path = base_path
 
 
+<<<<<<< HEAD
     def get_args(self, arg_name=None):
         try:
             if arg_name:
@@ -58,6 +59,10 @@ class Argument():
         except Exception as e:
             pass
         return None
+=======
+    def get_args(self):
+        return self.args
+>>>>>>> b8a386b4b7a35f549d9671c8934a5617f5f70ffa
 
 
 if __name__ == "__main__":

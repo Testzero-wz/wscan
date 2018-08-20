@@ -112,6 +112,7 @@ class ScanOutput():
         __ |/ |/ /_(__  )/ /__ / /_/ /_  / / /
         ____/|__/ /____/ \___/ \__,_/ /_/ /_/ 
         """ + Style.RESET_ALL)
+<<<<<<< HEAD
         self.new_line(Fore.LIGHTYELLOW_EX + " " * 10 + "Blog: <https://www.wzsite.cn>" + Style.RESET_ALL)
         self.new_line(Fore.LIGHTYELLOW_EX + " " * 10 + "Email: <testzero.wz@gmail.com>\n\n" + Style.RESET_ALL)
 
@@ -123,6 +124,10 @@ class ScanOutput():
 
     def redirect_to_sys(self):
         sys.stdout = self.save
+=======
+        self.new_line(Fore.LIGHTYELLOW_EX + " " * 10+ "Blog: <https://www.wzsite.cn>" + Style.RESET_ALL)
+        self.new_line(Fore.LIGHTYELLOW_EX + " " * 10 + "Email: <testzero.wz@gmail.com>\n\n" + Style.RESET_ALL)
+>>>>>>> b8a386b4b7a35f549d9671c8934a5617f5f70ffa
 
 
     @staticmethod

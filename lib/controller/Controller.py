@@ -29,6 +29,7 @@ class Controller(object):
         self.args = args
         self.output = ScanOutput()
 
+<<<<<<< HEAD
         self.more_detail = self.args.get_args("vv")
         self.detail = self.more_detail if self.more_detail else self.args.get_args("v")
         self.init_url = self.args.get_args("url")
@@ -37,6 +38,12 @@ class Controller(object):
         self.prefix = self.protocol + "://" + self.netloc
 
         self.fuzz_prefix = urljoin(self.prefix, self.args.get_args("base"))
+=======
+        self.protocol, self.netloc, self.path = self.__parse_url(self.init_url)
+        self.prefix = self.protocol + "://" + self.netloc
+        self.init_url = self.prefix + self.path
+        self.fuzz_prefix = urljoin(self.prefix, self.args.base)
+>>>>>>> b8a386b4b7a35f549d9671c8934a5617f5f70ffa
 
         self.queue = asyncio.Queue()
         self.tree = DirTree()
@@ -52,11 +59,17 @@ class Controller(object):
         self.loop = asyncio.get_event_loop()
         self.session = aiohttp.ClientSession(loop=self.loop)
 
+<<<<<<< HEAD
         self.fuzz_num = 0
         self.fuzz_progress = 0
         self.__init_fuzz_list(os.path.join(self.args.get_args("base_path"), "fuzz", "dirList.txt"))
         self.max_threads = self.args.get_args("max_num")
         self.alive_routine = self.args.get_args("max_num")
+=======
+        self.__init_fuzz_list(os.path.join(self.args.base_path, "fuzz", "dirList.txt"))
+        self.max_threads = self.args.max_num
+        self.alive_routine = self.args.max_num
+>>>>>>> b8a386b4b7a35f549d9671c8934a5617f5f70ffa
 
         self.output.print_banner()
         self.last_proceed_url = None
@@ -124,11 +137,15 @@ class Controller(object):
         else:
             charset = None
         html = await response.read()
+<<<<<<< HEAD
         not_found = self.__parse_results(html, str(response.url), charset=charset, only_check_404=only_check_404)
         if not_found:
             return True
         if only_check_404:
             return False
+=======
+        self.__parse_results(html, str(response.url), charset=charset)
+>>>>>>> b8a386b4b7a35f549d9671c8934a5617f5f70ffa
         for node in self.tree.enum_tree():
             if not node.is_access():
                 node.set_access()
@@ -152,7 +169,11 @@ class Controller(object):
         self.fuzz_num = len(self.urls)
 
 
+<<<<<<< HEAD
     def __parse_results(self, html, __url, charset=None, only_check_404=False):
+=======
+    def __parse_results(self, html, __url, charset=None):
+>>>>>>> b8a386b4b7a35f549d9671c8934a5617f5f70ffa
         """
         Adding URLs collected from html to web Tree
         :param html: The html you want to be parsed
@@ -181,12 +202,15 @@ class Controller(object):
             try:
                 self.tree.add(self.__check_href(href, __url))
             except Exception as e:
+<<<<<<< HEAD
                 pass
         # Collect href of tag <from>
         for href in map(lambda tag: tag.get('action'), action_list):
             try:
                 self.tree.add(self.__check_href(href, __url))
             except Exception as e:
+=======
+>>>>>>> b8a386b4b7a35f549d9671c8934a5617f5f70ffa
                 pass
 
         # Collect image URLs
@@ -207,6 +231,7 @@ class Controller(object):
         if href is None:
             return
         parse = urlparse(href)
+<<<<<<< HEAD
 
         if __url is None or parse.netloc == self.netloc:
             return parse.path
@@ -214,6 +239,14 @@ class Controller(object):
         if parse.scheme == "":
             return urlparse(urljoin(__url, href)).path
 
+=======
+        if __url is None:
+            return parse.path
+        if parse.scheme == "":
+            return urlparse(urljoin(__url, href)).path
+        if parse.netloc == self.netloc:
+            return href
+>>>>>>> b8a386b4b7a35f549d9671c8934a5617f5f70ffa
         return None
 
 
@@ -250,12 +283,16 @@ class Controller(object):
             else:
                 full_url = urljoin(self.fuzz_prefix, url)
 
+<<<<<<< HEAD
             self.last_proceed_url = url
             if not self.map_finish:
                 self.output.print_lastLine("Processing: %s" % url)
             else:
                 self.fuzz_progress +=1
                 self.output.print_progress((self.fuzz_progress / self.fuzz_num) * 100, url)
+=======
+                self.output.print_lastLine("Processing: %s" % url)
+>>>>>>> b8a386b4b7a35f549d9671c8934a5617f5f70ffa
             try:
 
                 res = await self.get_response(full_url, allow_redirects=(self.args.get_args("no_re") is False))
@@ -325,8 +362,14 @@ class Controller(object):
                         "An unknown error occurred when Requesting url:%s" % (
                                 Fore.BLUE + full_url + Style.RESET_ALL))
                     self.output.print_error("Error:%s" % e)
+<<<<<<< HEAD
                 self.alive_routine -= 1
                 raise Exception(e)
+=======
+                raise Exception(e)
+            finally:
+                pass
+>>>>>>> b8a386b4b7a35f549d9671c8934a5617f5f70ffa
 
 
     def __start_co_routine(self):
@@ -370,8 +413,12 @@ class Controller(object):
                 "There are too many Time-out queries, You can make it better by reducing the num of co-routine. ")
 
         self.output.print_info("End: %s" % time.strftime("%H:%M:%S"))
+<<<<<<< HEAD
         self.report()
 
+=======
+        self.output.new_line(Fore.LIGHTYELLOW_EX + "=" * (self.output.terminal_size) + Style.RESET_ALL+"\n")
+>>>>>>> b8a386b4b7a35f549d9671c8934a5617f5f70ffa
 
     def report(self):
         """
