@@ -12,6 +12,7 @@ class ScanOutput():
         self.lastInLine = False
         self.terminal_size = self.__get_terminal_size()
         self.system = platform.system()
+        self.save = None
 
 
     def __get_terminal_size(self):
@@ -22,29 +23,34 @@ class ScanOutput():
         return columns
 
 
-    def print_info(self, message):
+    def print_info(self, message, **kwargs):
         if self.system == "Windows":
-            self.new_line(Fore.LIGHTYELLOW_EX + Style.NORMAL + "[*] {0}".format(message) + Style.RESET_ALL)
+            self.new_line(Fore.LIGHTYELLOW_EX + Style.NORMAL + "[*] {0}".format(message) + Style.RESET_ALL, **kwargs)
         else:
-            self.new_line(Fore.LIGHTGREEN_EX + Style.NORMAL + "[*] {0}".format(message) + Style.RESET_ALL)
+            self.new_line(Fore.LIGHTGREEN_EX + Style.NORMAL + "[*] {0}".format(message) + Style.RESET_ALL, **kwargs)
 
 
-    def print_warning(self, message):
-        self.new_line(Fore.LIGHTYELLOW_EX + '[!] {0}'.format(message) + Style.RESET_ALL)
+    def print_warning(self, message, **kwargs):
+        self.new_line(Fore.LIGHTYELLOW_EX + '[!] {0}'.format(message) + Style.RESET_ALL, **kwargs)
 
 
-    def print_error(self, message):
-        self.new_line(Fore.RED + '[-] {0}'.format(message) + Style.RESET_ALL)
+    def print_error(self, message, **kwargs):
+        self.new_line(Fore.RED + '[-] {0}'.format(message) + Style.RESET_ALL, **kwargs)
 
 
-    def print_special(self, message):
-        self.new_line(Fore.LIGHTMAGENTA_EX + '[*] {0}'.format(message) + Style.RESET_ALL)
+    def print_special(self, message, **kwargs):
+        self.new_line(Fore.LIGHTMAGENTA_EX + '[*] {0}'.format(message) + Style.RESET_ALL, **kwargs)
 
 
     def print_lastLine(self, message):
 
+        self.inLine(Fore.LIGHTYELLOW_EX + '[~] {0}'.format(message).ljust(self.terminal_size - 5, " "))
+
+
+    def print_progress(self, present, url):
         self.inLine(
-            Fore.LIGHTYELLOW_EX + Back.CYAN + '[~] {0}'.format(message) + Back.RESET + Fore.RESET + Style.RESET_ALL)
+            Fore.LIGHTYELLOW_EX + '[~] {:2.1f}% [{:<50}] {}'.format(present, "=" * int(present // 2) + (
+                ">" if present < 100 else ""), url).ljust(self.terminal_size - 5, " "))
 
 
     def print_info_green(self, message):
@@ -62,25 +68,27 @@ class ScanOutput():
 
 
     def inLine(self, string):
-        self.erase()
         if len(string) > self.terminal_size:
-            string = string[:self.terminal_size - 7] + "..." + Back.RESET + Fore.RESET
+            string = string[:self.terminal_size - 7] + "..." + Style.RESET_ALL
+        string = string + "\r"
         sys.stdout.write(string)
         sys.stdout.flush()
         self.lastInLine = True
 
 
-    def new_line(self, message):
+    def new_line(self, message, nowrap=False):
         if self.lastInLine:
             self.erase()
 
         if self.system == 'Windows':
             sys.stdout.write(message)
             sys.stdout.flush()
-            sys.stdout.write('\n')
 
         else:
-            sys.stdout.write(message + '\n')
+            sys.stdout.write(message)
+
+        if not nowrap:
+            sys.stdout.write('\n')
 
         sys.stdout.flush()
         self.lastInLine = False
@@ -104,8 +112,17 @@ class ScanOutput():
         __ |/ |/ /_(__  )/ /__ / /_/ /_  / / /
         ____/|__/ /____/ \___/ \__,_/ /_/ /_/ 
         """ + Style.RESET_ALL)
-        self.new_line(Fore.LIGHTYELLOW_EX + " " * 10+ "Blog: <https://www.wzsite.cn>" + Style.RESET_ALL)
-        self.new_line(Fore.LIGHTYELLOW_EX + " " * 10 + "Mail: <testzero.wz@gmail.com>\n\n" + Style.RESET_ALL)
+        self.new_line(Fore.LIGHTYELLOW_EX + " " * 10 + "Blog: <https://www.wzsite.cn>" + Style.RESET_ALL)
+        self.new_line(Fore.LIGHTYELLOW_EX + " " * 10 + "Email: <testzero.wz@gmail.com>\n\n" + Style.RESET_ALL)
+
+
+    def redirect_to_file(self, file):
+        self.save = sys.stdout
+        sys.stdout = file
+
+
+    def redirect_to_sys(self):
+        sys.stdout = self.save
 
 
     @staticmethod
@@ -122,6 +139,4 @@ class ScanOutput():
 
 
 if __name__ == "__main__":
-    output = ScanOutput()
-    output.print_error("123" + Fore.BLUE + Back.GREEN + "456" + "789" + Fore.GREEN + "456" + Style.BRIGHT)
     pass

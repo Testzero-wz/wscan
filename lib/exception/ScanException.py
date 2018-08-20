@@ -19,12 +19,12 @@ class UnknownNetworkError(NetworkException):
     pass
 
 
-# ===================== Connect Exception ========================
-class ConnectError(ScanException):
+class SessionError(NetworkException):
     pass
 
 
-class DNSError(ConnectError):
+# ===================== Connect Exception ========================
+class ConnectError(ScanException):
     pass
 
 
@@ -32,10 +32,10 @@ class ResetError(ConnectError):
     pass
 
 
-# ===================== All kinds of Error ========================
+# ===================== Many kinds of Error ========================
 class FetchResError(ScanException):
     pass
 
 
-class FormatError(ScanException):
+class ParameterTypeError(ScanException):
     pass

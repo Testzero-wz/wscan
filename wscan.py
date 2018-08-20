@@ -1,4 +1,5 @@
-import sys, os
+import sys
+import os
 from lib.io.Argument import Argument
 from lib.controller.Controller import Controller
 
@@ -12,7 +13,7 @@ class wscan():
 
     def __init__(self):
         self.base_path = os.path.dirname(os.path.realpath(__file__))
-        self.args = Argument(self.base_path).get_args()
+        self.args = Argument(self.base_path)
         self.control = Controller(args=self.args)
         self.control.start()
 

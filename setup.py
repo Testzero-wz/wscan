@@ -8,6 +8,8 @@ def read(fname):
     return codecs.open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
+
+
 NAME = "wscan"
 
 DESCRIPTION = "A Fast & Simple web site scanner. "
@@ -20,14 +22,14 @@ AUTHOR = "wz"
 
 AUTHOR_EMAIL = "testzero.wz@gmail.com"
 
-URL = "http://blog.useasp.net/"
+URL = "https://github.com/WananpIG/wscan/"
 
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 
 LICENSE = "MIT"
 
 REQUIRED = ["aiohttp", "colorama"]
-
+PACKAGES = ['lib','fuzz']
 setup(
     name=NAME,
     version=VERSION,
@@ -37,7 +39,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7'
+        'Programming Language :: Python :: 3.7',
         'Intended Audience :: Developers',
     ],
     keywords=KEYWORDS,
@@ -46,7 +48,7 @@ setup(
     url=URL,
     install_requires=REQUIRED,
     license=LICENSE,
-    packages=find_packages(),
+    packages=PACKAGES,
     include_package_data=True,
     zip_safe=True,
 )

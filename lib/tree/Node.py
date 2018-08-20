@@ -62,6 +62,7 @@ class Node():
                 return check_child
             _child = Node(_child, parent=self)
         self.children[_child.name] = _child
+
         return _child
 
 
@@ -136,13 +137,4 @@ class Children(dict):
 
 
 if __name__ == "__main__":
-    import re
-
-
-    url = "http://www.wzsite.cn"
-    protocol, domain, port, path, query = re.findall(r"(.*?)://([^/:]+):?([0-9]+)?(/[^\?]*)?(\??.*)?$", url)[0]
-    print("protocol:", protocol)
-    print("domain：", domain)
-    print("port:", port)
-    print("path:", path)
-    print("query:", query)
+    pass
