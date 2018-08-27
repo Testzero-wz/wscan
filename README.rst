@@ -6,6 +6,13 @@ Base on aiohttp and refer to the dirsearch of multi-threading version.
 
 Can both run in Linux & Windows.
 
+Install
+----
+:: 
+
+  $ pip install wscan
+
+
 Features
 ----
 
@@ -20,7 +27,7 @@ Features
 Demo
 ----
 
-.. image:: https://raw.githubusercontent.com/WananpIG/wscan/master/demo.gif
+.. image:: https://www.wzsite.cn/static/wscan_demo.gif
 
 Usage:
 -----
@@ -55,7 +62,7 @@ Usage:
 
 Example :: 
 
-  $ wscan.py -u "http://www.example.com/" -f -m 
+  $ wscan -u "http://www.example.com/" -f -m 
 
 
 Requires
