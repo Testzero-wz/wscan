@@ -21,7 +21,7 @@ AUTHOR_EMAIL = "testzero.wz@gmail.com"
 
 URL = "https://github.com/WananpIG/wscan/"
 
-VERSION = "2.1.5"
+VERSION = "2.1.7"
 
 LICENSE = "MIT"
 console_scripts = ['wscan=wscan.main:main']
@@ -43,7 +43,8 @@ setup(
         'Intended Audience :: Developers',
     ],
     package_data = {
-    '': ['*.txt', '*.rst']
+    '': ['*.txt', '*.rst'],
+    'wscan/fuzz': ['*.txt']
     },
     entry_points = {'console_scripts': console_scripts},
     keywords=KEYWORDS,
