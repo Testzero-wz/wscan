@@ -424,6 +424,7 @@ class Controller(object):
 
             self.output.print_info(
                 "Web site map redirect into " + Fore.LIGHTMAGENTA_EX + file_name + Style.RESET_ALL)
+			self.output.print_info("Path: "+ Fore.LIGHTMAGENTA_EX + output_dir_path + Style.RESET_ALL)
             file.close()
 
         # Still print at terminal(lol)
