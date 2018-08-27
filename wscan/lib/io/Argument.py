@@ -5,7 +5,7 @@ class Argument():
 
     def __init__(self, base_path=None):
         parser = argparse.ArgumentParser(prog="wscan.py",
-                                         usage="wscan.py [-u URL] [-f] [-m] [Extend options]",
+                                         usage="wscan [-u URL] [-f] [-m] [Extend options]",
                                          description="""
          A Fast & Simple web site scanner. 
         """, epilog="Example: \n\t wscan -u \"http://www.example.com/\" -f -m -v")
