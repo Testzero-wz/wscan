@@ -41,7 +41,8 @@ class DirTree:
 
 
     def __drop(self, url, char='/'):
-        url = url[len(self.root.name):]
+        if url.startswith(self.root.name):
+            url = url[len(self.root.name):]
         try:
             if url[0] == char:
                 url = url[1:]
