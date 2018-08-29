@@ -1,4 +1,4 @@
-wscan v2.0
+wscan v2.2
 =====
 
 A Fast & Simple web site scanner.

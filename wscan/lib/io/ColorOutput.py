@@ -49,7 +49,7 @@ class ScanOutput():
 
     def print_progress(self, present, url):
         self.inLine(
-            Fore.LIGHTYELLOW_EX + '[~] {:2.1f}% [{:<50}] {}'.format(present, "=" * int(present // 2) + (
+            Fore.LIGHTYELLOW_EX + '[~] {:2.1f}% [{:<50}] {}'.format(present if present<100 else 99.9, "=" * int(present // 2) + (
                 ">" if present < 100 else ""), url).ljust(self.terminal_size - 5, " "))
 
 

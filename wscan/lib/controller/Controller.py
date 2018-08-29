@@ -36,8 +36,9 @@ class Controller(object):
         self.protocol, self.netloc, self.path = self.__parse_url(self.init_url)
         self.prefix = self.protocol + "://" + self.netloc
 
-        self.fuzz_prefix = urljoin(self.prefix, self.args.get_args("base"))
-        self.fuzz_prefix = self.fuzz_prefix if self.fuzz_prefix[-1]=="/" else self.fuzz_prefix+"/"
+        self.fuzz_base = self.args.get_args("base")
+        self.fuzz_base = self.fuzz_base if self.fuzz_base[-1] == "/" else self.fuzz_base + "/"
+        self.fuzz_prefix = urljoin(self.prefix, self.fuzz_base)
 
         self.queue = asyncio.Queue()
         self.tree = DirTree()
@@ -279,6 +280,8 @@ class Controller(object):
 
                     if not self.map_finish or status == 200:
                         try:
+                            if self.map_finish:
+                                url = urljoin(self.fuzz_base,url)
                             self.tree.add(url)
                             node = self.tree.get_node(url)
                             node.set_status(status)
@@ -402,11 +405,11 @@ class Controller(object):
                 file_name = self.netloc[:self.netloc.find(":")] + ".txt"
             else:
                 file_name = self.netloc + ".txt"
-                
+
             output_dir_path = os.path.join(self.args.get_args("base_path"), "output")
             if not os.path.exists(output_dir_path):
                 os.makedirs(output_dir_path)
-                
+
             output_file_path = os.path.join(output_dir_path, file_name)
 
             file = open(output_file_path, "w+")
@@ -424,7 +427,7 @@ class Controller(object):
 
             self.output.print_info(
                 "Web site map redirect into " + Fore.LIGHTMAGENTA_EX + file_name + Style.RESET_ALL)
-            self.output.print_info("Path: "+ Fore.LIGHTMAGENTA_EX + output_dir_path + Style.RESET_ALL)
+            self.output.print_info("Path: " + Fore.LIGHTMAGENTA_EX + output_dir_path + Style.RESET_ALL)
             file.close()
 
         # Still print at terminal(lol)
