@@ -21,7 +21,7 @@ AUTHOR_EMAIL = "testzero.wz@gmail.com"
 
 URL = "https://github.com/WananpIG/wscan/"
 
-VERSION = "2.2.0"
+VERSION = "2.2.2"
 
 LICENSE = "MIT"
 console_scripts = ['wscan=wscan.main:main']

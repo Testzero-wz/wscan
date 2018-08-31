@@ -12,7 +12,7 @@ if sys.version_info < (3, 5):
 class wscan():
 
     def __init__(self):
-        self.base_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),"wscan")
+        self.base_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "wscan")
         self.args = Argument(self.base_path)
         self.control = Controller(args=self.args)
         self.control.start()
