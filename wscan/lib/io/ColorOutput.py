@@ -71,20 +71,15 @@ class ScanOutput():
 
     def inLine(self, string):
         self.lastInLine = True
-        # self.erase()
-        # if len(string) > self.terminal_size:
-        #     string = "\r" + string[:self.terminal_size - 8] + "..." + Style.RESET_ALL + "\r"
+        if len(string) > self.terminal_size:
+            string = "\r" + string[:self.terminal_size - 8] + "..." + Style.RESET_ALL + "\r"
         string = ("\r" + string + Style.RESET_ALL) + "\r"
         sys.stdout.write(string)
         sys.stdout.flush()
 
 
     def new_line(self, message, nowrap=False):
-        if message.find("/2018/01/16/") != -1:
-            print("+++++++++++++++++++Find++++++++++++++++++++++")
         if self.lastInLine:
-            if message.find("/2018/01/16/") != -1:
-                print("erase" + message)
             self.erase()
 
         if self.system == 'Windows':
@@ -147,16 +142,3 @@ class ScanOutput():
 
 if __name__ == "__main__":
     pass
-    # import time
-    #
-    #
-    # t = ScanOutput()
-    # for i in range(30):
-    #     time.sleep(0.2)
-    #     t.print_lastLine("中中测试中中测试" + str(i).ljust(1, "1"))
-    #     # string = "\r" + "中文测试中文测试中文测试中文测试中文测试中文测试1233333333333333333333333333333333" + "\r"
-    #     # sys.stdout.write(string)
-    #     # sys.stdout.flush()
-    #     if i % 2 == 0:
-    #         t.print_info("Insert an New Line({})".format(i))
-    #     pass
