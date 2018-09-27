@@ -44,13 +44,15 @@ class ScanOutput():
 
     def print_lastLine(self, message):
 
-        self.inLine(Fore.LIGHTYELLOW_EX + '[~] {0}'.format(message).ljust(self.terminal_size - 5, " "))
+        self.inLine(Fore.LIGHTYELLOW_EX + '[~] {0}'.format(message))
 
 
     def print_progress(self, present, url):
         self.inLine(
-            Fore.LIGHTYELLOW_EX + '[~] {:2.1f}% [{:<50}] {}'.format(present if present<100 else 99.9, "=" * int(present // 2) + (
-                ">" if present < 100 else ""), url).ljust(self.terminal_size - 5, " "))
+                Fore.LIGHTYELLOW_EX + '[~] {:2.1f}% [{:<50}] {}'.format(present if present < 100 else 99.9,
+                                                                        "=" * int(present // 2) + (
+                                                                            ">" if present < 100 else ""), url).ljust(
+                        self.terminal_size - 5, " "))
 
 
     def print_info_green(self, message):
@@ -61,19 +63,19 @@ class ScanOutput():
         mes = ""
         history_res = res.history[0]
         mes += str(history_res.status) + " - " + Fore.LIGHTMAGENTA_EX + str(
-            url) + Fore.GREEN + " => "
+                url) + Fore.GREEN + " => "
         mes += ScanOutput.get_status_color(res.status) + Fore.GREEN + " - " + Fore.LIGHTMAGENTA_EX + str(
-            res.url) + Style.RESET_ALL
+                res.url) + Style.RESET_ALL
         self.print_info_green(mes)
 
 
     def inLine(self, string):
+        self.lastInLine = True
         if len(string) > self.terminal_size:
-            string = string[:self.terminal_size - 7] + "..." + Style.RESET_ALL
-        string = string + "\r"
+            string = "\r" + string[:self.terminal_size - 8] + "..." + Style.RESET_ALL + "\r"
+        string = ("\r" + string + Style.RESET_ALL) + "\r"
         sys.stdout.write(string)
         sys.stdout.flush()
-        self.lastInLine = True
 
 
     def new_line(self, message, nowrap=False):
