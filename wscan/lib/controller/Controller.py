@@ -222,7 +222,7 @@ class Controller(object):
     async def get_response(self, url, allow_redirects=True):
         headers = self.header.copy()
         headers['User-agent'] = random.choice(self.UA)
-        return await self.session.get(url, timeout=12, allow_redirects=allow_redirects)
+        return await self.session.get(url, timeout=12, allow_redirects=allow_redirects,headers=headers)
 
 
     async def co_routine(self):
