@@ -27,14 +27,14 @@ Features
 Demo
 ----
 
-.. image:: https://www.wzsite.cn/static/wscan_demo.gif
+.. image:: https://s1.ax1x.com/2018/10/21/iBaIZ4.gif
 
 Usage:
 -----
 
 **Type** ``-h`` **for help** :: 
 
-  $ wscan.py [-u URL] [-f] [-m] [Extend options]
+  $ wscan [-u URL] [-f] [-m] [Extend options]
 
   
 * **-u  URL**:          Target URL.   
