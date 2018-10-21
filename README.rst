@@ -27,7 +27,7 @@ Features
 Demo
 ----
 
-.. image:: https://s1.ax1x.com/2018/10/21/iBaIZ4.gif
+.. image:: https://i.loli.net/2018/10/21/5bcbf4e2841b4.gif
 
 Usage:
 -----
