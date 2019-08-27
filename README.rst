@@ -1,6 +1,6 @@
 wscan v2.2
 =====
-Wscan——一个基于协程的轻量级Web目录扫描器
+wscan——一个基于协程的轻量级Web目录扫描器
 
 写来平时用来打CTF，探测敏感信息和目录结构的，主要目的还是要优雅 、快捷一点 **:)**
 
@@ -78,7 +78,7 @@ English Document
 ======
 
 
-Wscan——A Fast & Simple web site scanner.
+wscan——A Fast & Simple web site scanner.
 Base on aiohttp and refer to the dirsearch of multi-threading version.
 
 Can both run in Linux & Windows.
