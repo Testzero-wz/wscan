@@ -72,7 +72,7 @@ Demo
 - colorama
 - bs4
 
-感谢开源作者 `maurosoria <https://github.com/maurosoria>`_。开源的 `dirsearch <https://github.com/maurosoria/dirsearch>`_为wscan提供的灵感以及Fuzz字典。
+感谢开源作者 `maurosoria <https://github.com/maurosoria>`_。开源的 `maurosoria <https://github.com/maurosoria>`_ `dirsearch <https://github.com/maurosoria/dirsearch>`_为wscan提供的灵感以及Fuzz字典。
 
 English Document
 ======
