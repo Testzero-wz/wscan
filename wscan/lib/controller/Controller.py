@@ -4,13 +4,16 @@ import aiohttp
 import os
 import sys
 from bs4 import BeautifulSoup
-from wscan.lib.tree.DirTree import DirTree
+from ..tree.DirTree import DirTree
 import time
 import random
 from colorama import Fore, Style
-from wscan.lib.io.ColorOutput import ScanOutput
-from wscan.lib.exception.ScanException import *
+from ..io.ColorOutput import ScanOutput
+from ..exception.ScanException import *
 from urllib.parse import urlparse, urljoin
+from random import getrandbits
+from .Pages import Page
+import difflib
 
 
 class Controller(object):
@@ -22,7 +25,6 @@ class Controller(object):
         'Connection': 'keep-alive',
         'Cache-Control': 'max-age=0',
     }
-
 
     def __init__(self, args=None):
 
@@ -42,12 +44,15 @@ class Controller(object):
 
         self.queue = asyncio.Queue()
         self.tree = DirTree()
+        self._404_page = None
         self.urls = []
         self.time_out_times = 0
         self.map_finish = False
         self.map = self.args.get_args('map')
         self.fuzz = self.args.get_args('fuzz')
+        self.work_path = self.args.get_args('work_path')
         self.not_found_flag = self.args.get_args("not_found")
+        self.timeout = self.args.get_args('timeout')
         self.start_time = None
 
         self.__init_ua()
@@ -63,7 +68,6 @@ class Controller(object):
         self.output.print_banner()
         self.last_proceed_url = None
 
-
     def __parse_url(self, _url):
         """
         Use regex parse url into (Protocol, Domain, Port, Path, Query)
@@ -78,7 +82,6 @@ class Controller(object):
             sys.exit(1)
         return protocol, netloc, path if path != "" else "/"
 
-
     def __init_ua(self):
         """
         * Read UA from file
@@ -87,14 +90,65 @@ class Controller(object):
         with open(path, "r") as file:
             self.UA = list(map(lambda x: x[:-1], file.readlines()))
 
-
     def __init__crawler_list(self):
         """
         * Initial first page & collete urls and put it into Tree.
         """
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(self.__page_url_collect(self.init_url, init_page_flag=True))
+        self.loop.run_until_complete(self.__page_url_collect(self.init_url, init_page_flag=True))
 
+    def __init__404_page(self):
+        """
+        * Collect a 404 page via request an nonexistent url which
+        * generate by random chars.
+        """
+
+        _404_url = urljoin(self.prefix, self.getrandhex(random.randint(40, 50)))
+        self.loop.run_until_complete(self.process_404(_404_url))
+
+    async def process_404(self, url):
+        _404_res = await self.get_response(url, allow_redirects=True)
+        _404_body = await  _404_res.read()  # bytes
+        # record 404 page body(<=2MB)
+        self._404_page = Page(status=_404_res.status,
+                              body=_404_body[:2 * 1024 * 1024],
+                              headers=_404_res.headers,
+                              charset=_404_res.charset,
+                              content_type=_404_res.content_type,
+                              content_length=_404_res.content_length if _404_res.content_length is not None else len(
+                                  _404_body))
+
+    async def is_404_pages(self, _res: aiohttp.ClientResponse):
+        """
+        * This function is use for recognizing 404 Pages via
+        *
+        :param _res:
+        :return:
+        """
+        if _res.status == 404:
+            return True
+        if _res.headers.get('content-type') is None or _res.headers.get('content-type').find("text/html") == -1:
+            return False
+        _body = await _res.read()
+        compare_page = Page(status=_res.status,
+                            body=_body,
+                            headers=_res.headers,
+                            charset=_res.charset,
+                            content_type=_res.content_type,
+                            content_length=_res.content_length if _res.content_length is not None else len(
+                                _body))
+
+        # Similarity of 404 page
+        # Check content_length
+        ratio = min(self._404_page.content_length, compare_page.content_length) / max(self._404_page.content_length,
+                                                                                      compare_page.content_length)
+        if ratio < 0.9:
+            return False
+        # Check title
+        if difflib.SequenceMatcher(None, self._404_page.get_title(), compare_page.get_title()).ratio() > 0.6:
+            return True
+        # TODO: simhash
+
+        return False
 
     async def __page_url_collect(self, response=None, init_page_flag=False, only_check_404=False):
         """
@@ -111,13 +165,18 @@ class Controller(object):
                 return
             self.tree.add(url)
             node = self.tree.get_node(url)
-            response = (await self.get_response(response))
+            try:
+                response = (await self.get_response(response, timeout=self.timeout))
+            except Exception as e:
+                self.output.print_error("ERR: " + str(e))
+                self.output.print_error("Init first page failed. Check url is correct.")
+                exit(0)
             node.set_status(response.status)
             node.set_access(True)
 
         headers = response.headers
 
-        if headers.get('content-type').find("text/html") == -1:
+        if headers.get('content-type') is None or headers.get('content-type').find("text/html") == -1:
             return
 
         charset = re.findall("charset=(.*?)$", headers.get('content-type'))
@@ -136,7 +195,6 @@ class Controller(object):
                 node.set_access()
                 self.queue.put_nowait(node.get_full_path())
 
-
     def __init_fuzz_list(self, url_list):
         """
         Initial fuzz list by reading urls from /fuzz/dirList.txt
@@ -152,7 +210,6 @@ class Controller(object):
         else:
             raise ParameterTypeError("Fuzz_list is required to be str or list , But a %s was given." % type(url_list))
         self.fuzz_num = len(self.urls)
-
 
     def __parse_results(self, html, __url, charset=None, only_check_404=False):
         """
@@ -199,7 +256,6 @@ class Controller(object):
                 except Exception:
                     pass
 
-
     def __check_href(self, href, __url=None):
         """
         Check the URL whether belongs to host and return path
@@ -218,12 +274,11 @@ class Controller(object):
 
         return None
 
-
-    async def get_response(self, url, allow_redirects=True):
+    async def get_response(self, url, allow_redirects=True, timeout=12):
         headers = self.header.copy()
         headers['User-agent'] = random.choice(self.UA)
-        return await self.session.get(url, timeout=12, allow_redirects=allow_redirects,headers=headers)
-
+        return await self.session.get(url, timeout=timeout, allow_redirects=allow_redirects, headers=headers)
+        # return await self.session.head(url, timeout=timeout, allow_redirects=allow_redirects, headers=headers)
 
     async def co_routine(self):
 
@@ -260,8 +315,12 @@ class Controller(object):
                 self.output.print_progress((self.fuzz_progress / self.fuzz_num) * 100, url)
             try:
 
-                res = await self.get_response(full_url, allow_redirects=(self.args.get_args("no_re") is False))
-                status = res.status
+                res = await self.get_response(full_url,
+                                              allow_redirects=(self.args.get_args("no_re") is False),
+                                              timeout=self.timeout)
+
+                is_404 = await  self.is_404_pages(res)
+                status = 404 if is_404 else res.status
 
                 """
                 * Try to get node from Tree.
@@ -281,7 +340,7 @@ class Controller(object):
                     if not self.map_finish or status == 200:
                         try:
                             if self.map_finish:
-                                url = urljoin(self.fuzz_base,url)
+                                url = urljoin(self.fuzz_base, url)
                             self.tree.add(url)
                             node = self.tree.get_node(url)
                             node.set_status(status)
@@ -313,6 +372,7 @@ class Controller(object):
                 else:
                     self.output.print_progress((self.fuzz_progress / self.fuzz_num) * 100, self.last_proceed_url)
 
+            # Exceptions handler
             except aiohttp.client_exceptions.ClientConnectionError as e:
                 if self.more_detail:
                     self.output.print_error("RST - :%s" % (
@@ -323,23 +383,28 @@ class Controller(object):
                     self.output.print_warning("OUT - %s" % url)
                 self.time_out_times += 1
 
+            except aiohttp.client_exceptions.InvalidURL as e:
+                if self.detail:
+                    self.output.print_warning("ERR - %s" % url)
+                if self.more_detail:
+                    self.output.print_warning("RES : aiohttp.client_exceptions.InvalidURL")
             except Exception as e:
                 if self.more_detail:
                     self.output.print_error(
                         "An unknown error occurred when Requesting url:%s" % (
                                 Fore.BLUE + full_url + Style.RESET_ALL))
                     self.output.print_error("Error:%s" % e)
+                    raise e
                 self.alive_routine -= 1
                 raise Exception(e)
-
 
     def __start_co_routine(self):
         self.alive_routine = self.max_threads
         tasks = [self.co_routine() for i in range(self.max_threads)]
         self.loop.run_until_complete(asyncio.wait(tasks))
 
-
     def __start(self):
+        self.__init__404_page()
         if self.args.get_args("map"):
             self.output.print_info("Start Mapping...")
             self.__init__crawler_list()
@@ -351,7 +416,6 @@ class Controller(object):
             for url in self.urls:
                 self.queue.put_nowait(url)
             self.__start_co_routine()
-
 
     def start(self):
 
@@ -366,8 +430,8 @@ class Controller(object):
 
         except Exception as e:
             self.output.print_error("Fatal error occurs!")
-            self.output.print_error("Error: %s" % e)
-            sys.exit(-1)
+            # self.output.print_error("Error: %s" % e)
+            raise e
 
         if self.time_out_times >= 5:
             self.output.print_warning(
@@ -375,7 +439,6 @@ class Controller(object):
 
         self.output.print_info("End: %s" % time.strftime("%H:%M:%S"))
         self.report()
-
 
     def report(self):
         """
@@ -401,38 +464,48 @@ class Controller(object):
 
         # Generate a scan report file
         if redirect:
-            if self.netloc.find(":") != -1:
-                file_name = self.netloc[:self.netloc.find(":")] + ".txt"
+
+            file_name = self.netloc.replace(":", "_") + ".txt"
+            _output_dir = self.args.get_args("output")
+            if _output_dir:
+                if not os.path.exists(_output_dir):
+                    os.makedirs(_output_dir)
             else:
-                file_name = self.netloc + ".txt"
+                _output_dir = self.work_path
 
-            output_dir_path = os.path.join(self.args.get_args("base_path"), "output")
-            if not os.path.exists(output_dir_path):
-                os.makedirs(output_dir_path)
+            output_file_path = os.path.join(_output_dir, file_name)
 
-            output_file_path = os.path.join(output_dir_path, file_name)
-
-            file = open(output_file_path, "w+")
+            file = open(output_file_path, "w+", encoding="utf-8")
             self.output.redirect_to_file(file)  # Switch sys.out to file
 
             # Report details
+            print("\n# ====================================== Report =======================================\n")
             print("URL: " + self.init_url)
             print("Host: " + self.netloc)
             print("Scan time: {}".format(time.strftime("%Y/%m/%d %H:%M:%S")))
             print("Cost: {:.2f} s".format(end - self.start_time))
-            print("Web site map:")
-            self.tree.print_tree()
-
+            # Web map
+            if not self.args.get_args("no_map"):
+                print("\n# =================================== Web site map ====================================\n"
+                      "# You can use `--no-map` to not display it in report \n"
+                      "# =====================================================================================\n")
+                self.tree.print_tree()
+            # Site urls
+            if not self.args.get_args("--no-urls"):
+                print("\n# =================================== Web site urls ===================================\n"
+                      "# Record all url response without status code 4xx or 5xx \n"
+                      "# You can use `--no-urls` to not display it in report \n"
+                      "# =====================================================================================\n")
+                self.tree.print_all_path(_filter=lambda x: x.status < 400)
             self.output.redirect_to_sys()  # Switch sys.out to terminal
 
             self.output.print_info(
                 "Web site map redirect into " + Fore.LIGHTMAGENTA_EX + file_name + Style.RESET_ALL)
-            self.output.print_info("Path: " + Fore.LIGHTMAGENTA_EX + output_dir_path + Style.RESET_ALL)
+            self.output.print_info("Path: " + Fore.LIGHTMAGENTA_EX + _output_dir + Style.RESET_ALL)
             file.close()
 
         # Still print at terminal(lol)
         else:
-
             # Print tree
             self.output.new_line("\n" + Fore.LIGHTYELLOW_EX + "=" * self.output.terminal_size + Style.RESET_ALL)
             self.output.new_line(Fore.LIGHTYELLOW_EX + "Web site map:" + Style.RESET_ALL)
@@ -441,6 +514,8 @@ class Controller(object):
 
         self.output.print_info("Scan finished. Cost %.2f s." % (end - self.start_time))
 
+    async def sess_close(self):
+        await self.session.close()
 
     def print_tree(self):
         """
@@ -463,8 +538,9 @@ class Controller(object):
 
             print(Fore.CYAN + str(status) + Style.RESET_ALL)
 
-
     def __del__(self):
+        if self.loop:
+            self.loop.run_until_complete(self.sess_close())
         """
         * Close session manually, learn from StackOverflow
         """
@@ -474,11 +550,16 @@ class Controller(object):
                 if self.session._connector_owner:
                     self.session._connector.close()
                 self.session._connector = None
+            if not self.loop.is_closed():
                 self.loop.close()
-
         except Exception:
-            self.output.print_error("Session was not closed or didn't exit.")
+            if self.output:
+                self.output.print_error("Session was not closed or didn't exit.")
             raise SessionError("Session was not closed")
+
+    @staticmethod
+    def getrandhex(length: int) -> str:
+        return "%x" % getrandbits(4 * length)
 
 
 if __name__ == '__main__':

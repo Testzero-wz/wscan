@@ -102,7 +102,7 @@ class ScanOutput():
             sys.stdout.flush()
 
         else:
-            sys.stdout.write('\033[1K')
+            sys.stdout.write('\033[2K')
             sys.stdout.write('\033[0G')
             sys.stdout.flush()
 

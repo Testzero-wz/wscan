@@ -1,4 +1,4 @@
-from wscan.lib.tree.Node import Node
+from ..tree.Node import Node
 
 
 class DirTree:
@@ -9,7 +9,6 @@ class DirTree:
         elif isinstance(root, str):
             self.root = Node(root)
         self.root.set_access(True)
-
 
     def add(self, node_path=None):
         if node_path is None:
@@ -31,14 +30,12 @@ class DirTree:
 
         return parent
 
-
     def __url_filter(self, url):
         offset = url.find("#")
         url = url[:offset if offset != -1 else None]
         offset = url.find("?")
         url = url[:offset if offset != -1 else None]
         return self.__drop(url)
-
 
     def __drop(self, url, char='/'):
         if url.startswith(self.root.name):
@@ -51,7 +48,6 @@ class DirTree:
         except Exception:
             pass
         return url
-
 
     def get_node(self, path):
         path_split = ""
@@ -72,24 +68,34 @@ class DirTree:
             raise KeyError("Node isn't exit.(Path:%s)" % path)
         return parent
 
-
     def print_tree(self):
-        self.__print(self.root)
+        self.__print_tree(self.root)
 
-
-    def __print(self, node, depth=0):
+    def __print_tree(self, node, depth=0):
         if node.is_root():
             print(" +--", node.name)
         pre_str = " │   " * (depth + 1)
         for c in node.children:
             print(pre_str + " +--", c.name, c.status)
-            self.__print(c, depth + 1)
+            self.__print_tree(c, depth + 1)
 
+    def print_all_path(self, _filter=None):
+        self.__print_all_path(self.root, _filter=_filter)
+
+    def __print_all_path(self, node, pre_str=None, _filter=None):
+
+        if node.is_root():
+            pre_str = str(node)
+            if not _filter or (_filter and _filter(node)):
+                print(node)
+        for c in node.children:
+            if not _filter or (_filter and _filter(c)):
+                print(pre_str + str(c) + "/")
+            self.__print_all_path(c, pre_str + str(c) + "/", _filter=_filter)
 
     # Depth-first walk
     def enum_tree(self):
         return iter(self.root)
-
 
     @property
     def num_of_nodes(self):
@@ -97,7 +103,6 @@ class DirTree:
         for node in self.enum_tree():
             num += 1
         return num
-
 
     @staticmethod
     def last_range(iterable):
