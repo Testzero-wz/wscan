@@ -39,8 +39,11 @@ class Controller(object):
         self.prefix = self.protocol + "://" + self.netloc
 
         self.fuzz_base = self.args.get_args("base")
-        self.fuzz_base = self.fuzz_base if self.fuzz_base[-1] == "/" else self.fuzz_base + "/"
-        self.fuzz_prefix = urljoin(self.prefix, self.fuzz_base)
+        if self.fuzz_base is None:
+            self.fuzz_prefix = self.init_url if self.init_url[-1] == "/" else self.init_url + "/"
+        else:
+            self.fuzz_base = self.fuzz_base if self.fuzz_base[-1] == "/" else self.fuzz_base + "/"
+            self.fuzz_prefix = urljoin(self.prefix, self.fuzz_base)
 
         self.queue = asyncio.Queue()
         self.tree = DirTree()
@@ -106,7 +109,13 @@ class Controller(object):
         self.loop.run_until_complete(self.process_404(_404_url))
 
     async def process_404(self, url):
-        _404_res = await self.get_response(url, allow_redirects=True)
+        try:
+            _404_res = await self.get_response(url, allow_redirects=True, timeout=self.timeout)
+        except asyncio.TimeoutError:
+            self.output.print_warning(
+                "Init 404 page timeout, auto detect 404 pages func won't work.(But you can still scan)")
+            self.output.print_warning("You should consider use -t <NUM> to extend timeout.")
+            return
         _404_body = await  _404_res.read()  # bytes
         # record 404 page body(<=2MB)
         self._404_page = Page(status=_404_res.status,
@@ -153,9 +162,9 @@ class Controller(object):
     async def __page_url_collect(self, response=None, init_page_flag=False, only_check_404=False):
         """
         Parse the content, filter out urls.
-        :param html: Content
-        :param headers: Response header
+        :param response: url or Content
         :param init_page_flag: Differentiate between init_first_page or fuzzing
+        :param only_check_404: only check 404
         :return: None
         """
 
@@ -319,7 +328,9 @@ class Controller(object):
                                               allow_redirects=(self.args.get_args("no_re") is False),
                                               timeout=self.timeout)
 
-                is_404 = await  self.is_404_pages(res)
+                is_404 = False
+                if self._404_page is not None:
+                    is_404 = await  self.is_404_pages(res)
                 status = 404 if is_404 else res.status
 
                 """
@@ -404,7 +415,14 @@ class Controller(object):
         self.loop.run_until_complete(asyncio.wait(tasks))
 
     def __start(self):
-        self.__init__404_page()
+        try:
+            self.__init__404_page()
+        except Exception as e:
+            self.output.print_error("Something wrong when init 404 page")
+            if self.detail or self.more_detail:
+                self.output.print_error("ERR: " + str(e))
+            self.output.print_warning("Auto detect 404 func will be close. But you can still scan.")
+
         if self.args.get_args("map"):
             self.output.print_info("Start Mapping...")
             self.__init__crawler_list()

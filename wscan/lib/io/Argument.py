@@ -31,7 +31,7 @@ class Argument():
                             help="""\nRequest timeout. [Default: 12]""", default=12)
 
         parser.add_argument('-b', dest="base",
-                            help="""\nBase path for fuzzing.  e.g. "/cms/app" [Default: / ]""", default="/")
+                            help="""\nBase path for fuzzing.  e.g. "/cms/app" [Default: / ]""", default=None)
 
         parser.add_argument('-e', dest="extend",
                             help="""\nSuffix name used for fuzzing. [Default: php]""", default="php")

@@ -1,14 +1,6 @@
 import sys
 import os
 
-from .lib.io.Argument import Argument
-from .lib.controller.Controller import Controller
-
-
-if sys.version_info < (3, 5):
-    sys.stdout.write("Requires Python 3.5 or higher ")
-    sys.exit(1)
-
 
 class wscan():
 
@@ -24,5 +16,16 @@ def main():
     wscan()
 
 
+if sys.version_info < (3, 5):
+    sys.stdout.write("Requires Python 3.5 or higher ")
+    sys.exit(1)
+
 if __name__ == "__main__":
+    from lib.io.Argument import Argument
+    from lib.controller.Controller import Controller
+
     main()
+
+else:
+    from .lib.io.Argument import Argument
+    from .lib.controller.Controller import Controller
