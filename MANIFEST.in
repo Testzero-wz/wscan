@@ -1,1 +1,2 @@
 include ./wscan/fuzz/dirList.txt ./wscan/fuzz/user_agent.txt 
+include LICENSE README.md
