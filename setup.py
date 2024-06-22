@@ -14,13 +14,13 @@ LONG_DESCRIPTION = read("README.md")
 
 KEYWORDS = "wscan scanner fuzz sitemap base on aiohttp"
 
-AUTHOR = "wz"
+AUTHOR = "T3stzer0"
 
 AUTHOR_EMAIL = "testzero.wz@gmail.com"
 
 URL = "https://github.com/testzero-wz/wscan/"
 
-VERSION = "2.4.4"
+VERSION = "2.4.5"
 
 LICENSE = "MIT"
 console_scripts = ['wscan=wscan.main:main']
