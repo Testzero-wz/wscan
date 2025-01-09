@@ -20,7 +20,7 @@ AUTHOR_EMAIL = "testzero.wz@gmail.com"
 
 URL = "https://github.com/testzero-wz/wscan/"
 
-VERSION = "2.4.5"
+VERSION = "2.4.6"
 
 LICENSE = "MIT"
 console_scripts = ['wscan=wscan.main:main']

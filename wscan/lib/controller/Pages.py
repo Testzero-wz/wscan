@@ -21,7 +21,7 @@ class Page:
             return
         if isinstance(self.body, bytes):
             body = self.body.decode(self.charset, errors="ignore")
-        title = re.findall("<title>([\s\S]*?)</title>", body)
+        title = re.findall(r"<title>([\s\S]*?)</title>", body)
         if len(title):
             self.title = title[0]
         return self.title
@@ -32,7 +32,7 @@ class Page:
             return
         if isinstance(body, bytes):
             body = body.decode(charset, errors="ignore")
-        title = re.findall("<title>([\s\S]*?)</title>", body)
+        title = re.findall(r"<title>([\s\S]*?)</title>", body)
         if len(title):
             title = title[0]
             return title
