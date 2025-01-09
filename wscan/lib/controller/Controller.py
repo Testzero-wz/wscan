@@ -79,7 +79,7 @@ class Controller(object):
         """
         url = _url[:-1] if _url[-1] == "/" else _url
         try:
-            protocol, netloc, path, query = re.findall("(.*?)://([^/]+)?(/?[^\?]*)?(\??.*)?$", url)[0]
+            protocol, netloc, path, query = re.findall(r"(.*?)://([^/]+)?(/?[^\?]*)?(\??.*)?$", url)[0]
         except Exception:
             self.output.print_error("Parameter url format error. e.g http://www.example.com")
             sys.exit(1)
@@ -188,7 +188,7 @@ class Controller(object):
         if headers.get('content-type') is None or headers.get('content-type').find("text/html") == -1:
             return
 
-        charset = re.findall("charset=(.*?)$", headers.get('content-type'))
+        charset = re.findall(r"charset=(.*?)$", headers.get('content-type'))
         if len(charset) == 1:
             charset = charset[0]
         else:
@@ -286,8 +286,7 @@ class Controller(object):
     async def get_response(self, url, allow_redirects=True, timeout=12):
         headers = self.header.copy()
         headers['User-agent'] = random.choice(self.UA)
-        return await self.session.get(url, timeout=timeout, allow_redirects=allow_redirects, headers=headers)
-        # return await self.session.head(url, timeout=timeout, allow_redirects=allow_redirects, headers=headers)
+        return await self.session.get(url, timeout=timeout, allow_redirects=allow_redirects, headers=headers, ssl=False)
 
     async def co_routine(self):
 
@@ -411,7 +410,7 @@ class Controller(object):
 
     def __start_co_routine(self):
         self.alive_routine = self.max_threads
-        tasks = [self.co_routine() for i in range(self.max_threads)]
+        tasks = [self.loop.create_task(self.co_routine()) for i in range(self.max_threads)]
         self.loop.run_until_complete(asyncio.wait(tasks))
 
     def __start(self):
